@@ -1,16 +1,103 @@
 // Explore a simple class
+// Ruihe (Jerry) Li
+// INFO 448
 
 println("UW Homework: Simple Kotlin")
 
 // write a "whenFn" that takes an arg of type "Any" and returns a String
+/*
+    "Howdy" to "Say what?",
+    "Bonjour */
+fun whenFn(a: Any): String {
+    when (a) {
+        "Hello" -> return "world"
+        "Howdy", "Bonjour" -> return "Say what?"
+        0 -> return "zero"
+        1 -> return "one"
+        in 2..10 -> return "low number"
+        is Int -> return "a number"
+        else -> return "I don't understand"
+    }   
 
+}
 // write an "add" function that takes two Ints, returns an Int, and adds the values
+fun add(a: Int, b: Int): Int{
+    return a + b
+}
 // write a "sub" function that takes two Ints, returns an Int, and subtracts the values
+fun sub(a: Int, b: Int): Int {
+    return a - b
+}
 // write a "mathOp" function that takes two Ints and a function (that takes two Ints and returns an Int), returns an Int, and applies the passed-in-function to the arguments
-
+fun mathOp(a: Int, b: Int, op: (c: Int, d: Int) -> Int) : Int{
+    return op(a,b)
+}
 // write a class "Person" with first name, last name and age
+/*
+The third section is to explore classes. You are to create a standard "POJO"-type class called "Person", which should have three properties (firstName, a String; lastName, a String; and age, an Int), provide a constructor that takes all three properties as arguments, provides an "equals" implementation that tests whether two Persons hold the same values, and an appropriate "hashCode" implementation. (See "Effective Java", Item 9, for details if you've never seen this before.) Define a read-only "debugString" property on it that returns a String containing the Person data in a format like this: "[Person firstName:Ted lastName:Neward age:45]".
+ */
+class Person(firstName: String, lastName: String, age: Int){
+    var firstName : String
+    var lastName: String
+    var age : Int
+    val debugString : String 
+        get() { 
+            return "[Person firstName:$firstName lastName:$lastName age:$age]"
+        }
 
+    init{
+        this.firstName = firstName
+        this.lastName = lastName
+        this.age = age
+    }
+
+    override fun equals(other: Any?): Boolean{
+        if (this === other &&
+        this.firstName == other.firstName &&
+        this.lastName == other.lastName &&
+        this.age == other.age) 
+        return true
+        return false
+    }
+
+    override fun hashCode(): Int{
+        return debugString.hashCode()
+    }
+}
 // write a class "Money"
+class Money(amount: Int, currency: String) {
+    var amount : Int
+    var currency: String
+    val conversionTable:HashMap<String, Double> = hashMapOf("GBP" to 0.5, "USD" to 1.0, "CAN" to 1.25, "EUR" to 1.5)
+
+    init{
+        if (amount >= 0) {
+            this.amount = amount
+        } else {
+            this.amount = 0
+        }
+
+        if (currency == "USD" || currency == "GBP" || currency == "EUR" || currency == "CAN") {
+            this.currency = currency
+        } else {
+            this.currency = "USD"
+        }
+    }
+
+    fun convert(to : String): Money {
+        if (to == "USD" || to == "GBP" || to == "EUR" || to == "CAN"){
+            val divide = this.conversionTable[this.currency]
+            val multi = this.conversionTable[to]
+            return Money((this.amount.toDouble()/divide!!*multi!!).toInt(), to)
+        }
+        return this
+    }
+
+    operator fun plus(other: Money): Money {
+        val converted = other.convert(this.currency)
+        return Money(this.amount + converted.amount, this.currency)
+    }
+}
 
 // ============ DO NOT EDIT BELOW THIS LINE =============
 
